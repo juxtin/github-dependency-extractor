@@ -7,12 +7,22 @@ plugins {
     `java-gradle-plugin`
     `java-test-fixtures`
     `groovy`
+    `maven-publish`
     id("com.github.johnrengelman.shadow")
 }
 
 val shadowImplementation: Configuration by configurations.creating
 configurations["compileOnly"].extendsFrom(shadowImplementation)
 configurations["testImplementation"].extendsFrom(shadowImplementation)
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+            artifactId = tasks.jar.get().archiveBaseName.get()
+        }
+    }
+}
 
 dependencies {
     compileOnly(kotlin("stdlib-jdk8"))
